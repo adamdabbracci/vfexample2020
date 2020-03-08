@@ -2,9 +2,9 @@
 1. Install the dependencies: `npm install`
 2. Install the Serverless CLI: `npm install -g sls`
 3. Enable verbose debugging: `export SLS_DEBUG=*`
-4. Deploy the package: `sls deploy --stage dev`
+4. Deploy the package: `sls deploy --stage dev`, which will sync the local file and trigger the lambda
 
-### Run the extract function locally
+### Run the lambda locally
 Run `sls invoke local --stage dev --function extractCustomerData`
 
 ### Deploy
