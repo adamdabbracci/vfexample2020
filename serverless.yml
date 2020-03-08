@@ -13,6 +13,7 @@ custom:
   deploymentName: vf-demo
   s3BucketName: ${self:custom.deploymentName}-customer-upload-${self:provider.stage}
   dynamoDbTableName: ${self:custom.deploymentName}-customer-table-${self:provider.stage}
+  extractFunctionName: ${self:custom.deploymentName}-${self:provider.stage}-extractCustomerData
   s3Sync:
     - bucketName: ${self:custom.s3BucketName}
       localDir: customerdata

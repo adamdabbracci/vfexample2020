@@ -1,5 +1,4 @@
 var AWS = require(`aws-sdk`);
-const Lambda = new AWS.Lambda();
 
 /**
  * Reads the customer data from S3 and puts it into the database
@@ -18,17 +17,44 @@ class PopulateDbPlugin {
       console.log(this.hooks);
     }
 
+    /**
+     * Invokes the lambda which will sync the S3 data to the database
+     *
+     * @returns
+     * @memberof PopulateDbPlugin
+     */
     async invoke() {
-        console.log(this.serverless.variables.service.custom.s3BucketName);
-        const lambdaName = this.serverless.variables.service.custom.s3BucketName;
+        const Lambda = new AWS.Lambda({
+            region: this.serverless.variables.service.provider.region,
+        });
 
-        console.log(`[PLUGINS] PopulateDbPlugin: Invoking lambda: ${lambdaName}`);
+        
+        const lambdaName = this.serverless.variables.service.custom.extractFunctionName;
+
         try {
-            await Lambda.invoke()
+            console.log(`[PLUGINS] PopulateDbPlugin: Invoking lambda: ${lambdaName}`);
+
+            const result = await Lambda.invoke({
+                FunctionName: lambdaName
+            }).promise();
+
+            if (result.FunctionError) {
+                console.log(`[PLUGINS] PopulateDbPlugin: Invocation failed`);
+                console.log(result.FunctionError);
+                return;
+            }
+
+            if (result.Payload) {
+                console.log(`[PLUGINS] PopulateDbPlugin: Invocation success:`);
+                console.log(result.Payload);
+            }
+
+            console.log(`[PLUGINS] PopulateDbPlugin: Finished lambda: ${lambdaName}`);
+
             return;
         }
         catch (ex) {
-            console.log(`[PLUGINS] PopulateDbPlugin: failed to retrieve data:`);
+            console.log(`[PLUGINS] PopulateDbPlugin: failed to invoke lambda:`);
             console.log(ex);
             return;
         }
