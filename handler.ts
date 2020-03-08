@@ -1,13 +1,15 @@
 import { CustomerService } from "./services/customer.service";
 import { S3Service } from "./services/s3.service";
 import { Customer } from "./models";
-import * as _ from "lodash";
 
 
 
 const customerService = new CustomerService();
 const s3Service = new S3Service(process.env.S3_BUCKET_NAME || `NO_BUCKET_NAME_PROVIDED`);
 
+/**
+ * Extracts customer data from S3 and puts it in DynamoDB
+ */
 module.exports.extractCustomerData = async () => {
     console.log(`Starting extraction process`);
 

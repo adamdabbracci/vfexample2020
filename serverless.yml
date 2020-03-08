@@ -25,6 +25,7 @@ provider:
   runtime: nodejs10.x
   region: us-east-1
   stage: ${opt:stage, 'dev'}
+  # Required if you have multiple AWS Named Profiles
   profile: speckle
   environment:
       ENVIRONMENT: ${self:provider.stage}

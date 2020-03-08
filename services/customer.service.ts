@@ -10,22 +10,40 @@ const mapper = new DataMapper({client});
 export class CustomerService {
 
     /**
-     * Returns a customer by their ID
-     *
-     * @memberof CustomerService
-     */
-    getCustomerById = (id: string): Promise<{id: string}>=> {
-        const customer: Customer = Object.assign(new Customer, {id: id});
-        return mapper.get(customer);
-    }
-
-    /**
      * Creates or updates a customer
      *
      * @memberof CustomerService
      */
-    writeCustomer = (_customer: Customer): Promise<Customer> => {
-        const customer: Customer = Object.assign(new Customer, _customer);
-        return mapper.put(customer);
+    // @ts-ignore: JSDoc thinks the ? is from itself and not from typescript
+    writeCustomer = async (_customer: Customer): Promise<Customer?> => {
+
+        let result;
+
+        try {
+            const customer: Customer = Object.assign(new Customer, _customer);
+            
+            try {
+                result = await mapper.put(customer);
+                console.log(`Customer saved successfully:`);
+                console.log(_customer);
+                return result;
+            }
+            catch(ex) {
+                console.log(`Customer failed to save:`);
+                console.log(_customer);
+                console.log(ex);
+                return null;
+            }
+
+            
+
+        }
+        catch(ex) {
+            console.log(`Customer failed to validate:`);
+            console.log(_customer);
+            return null;
+        }
+
+        
     }
 }
